@@ -159,7 +159,7 @@
         let allData = null;
         let jsonformdata = null;
         let editId = null;
-        let editObj = null;
+        //let editObj = null;
         const itemsUrl = 'http://www.localhost:9898/shopify/items';
         //first add an event listener for page load
         document.addEventListener("DOMContentLoaded", get_json_data, false); // get_json_data is the function name that will fire on page load
@@ -173,7 +173,7 @@
                 if (this.readyState == 4 && this.status == 200) {//when a good response is given do this
 
                     var data = JSON.parse(this.responseText); // convert the response to a json object
-                    allData = data;
+                    allData = JSON.parse(this.responseText);
                     append_json(data);// pass the json object to the append_json function
                 }
             }
@@ -187,7 +187,7 @@
 
         function delete_json_data() {
             // Relative URL of external json file
-            var delete_json_url = itemsUrl +'/' + deleteId;
+            var delete_json_url = itemsUrl + '/' + deleteId;
 
             //Build the XMLHttpRequest (aka AJAX Request)
             xmlhttp = new XMLHttpRequest();
@@ -205,9 +205,11 @@
         }
 
         function editSubmitBtn() {
+            var edit_json_url = itemsUrl + '/' + editId;
             // var obj = $('editForm').serializeJSON();
             // var form = document.getElementById('editForm');
             // var formData = new FormData(form);
+            editObj = Object();
             editObj.id = editId;
             editObj.itemName = document.getElementById('editInputItemName').value;
             editObj.itemType = document.getElementById('editInputItemType').value;
@@ -217,14 +219,43 @@
             editObj.itemSupplierId = document.getElementById('editInputItemSuppID').value;
             editObj.itemSupplierName = document.getElementById('editInputItemSuppName').value;
 
+            //convert object to json string
+            var string = JSON.stringify(editObj);
+
+            //convert string to Json Object
+            console.log(string);
             console.log("EDIT SUBMIT button clicked with form data " + editObj);
             // var formData = JSON.stringify($("editForm").serializeArray());
             // jsonformdata = formData;
+
+            //Build the XMLHttpRequest (aka AJAX Request)
+            xmlhttp = new XMLHttpRequest();
+            xmlhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {//when a good response is given do this
+                    location.reload()
+                    
+                }
+            }
+            //set the request destination and type
+            xmlhttp.open("PUT", edit_json_url, true);
+            
+            //set required headers for the request
+            xmlhttp.setRequestHeader("Content-type", "application/json");
+            
+            // send the request
+            xmlhttp.send(string); // when the request completes it will execute the code in onreadystatechange section
         }
 
         function editNoBtn() {
             editId = null;
-            editObj = null;
+            document.getElementById('editInputItemName').setAttribute('value', null);
+                    document.getElementById('editInputItemType').setAttribute('value', null);
+                    document.getElementById('editInputItemCount').setAttribute('value', null);
+                    document.getElementById('editInputItemSP').setAttribute('value', null);
+                    document.getElementById('editInputItemCP').setAttribute('value', null);
+                    document.getElementById('editInputItemSuppID').setAttribute('value', null);
+                    document.getElementById('editInputItemSuppName').setAttribute('value', null);
+            //editObj = null;
             console.log("Delete NO button clicked for id: " + deleteId);
         }
 
@@ -238,9 +269,8 @@
             console.log("Delete NO button clicked for id: " + deleteId);
         }
 
-        function
-            editButton(id) {
-            var editF = document.getElementById('editInputItemName');
+        function editButton(id) {
+            
             editId = id;
             allData.forEach(function (obj) {
                 if (obj.id == id) {
@@ -251,7 +281,7 @@
                     document.getElementById('editInputItemCP').setAttribute('value', obj.itemCostPrice);
                     document.getElementById('editInputItemSuppID').setAttribute('value', obj.itemSupplierId);
                     document.getElementById('editInputItemSuppName').setAttribute('value', obj.itemSupplierName);
-                    editObj = obj;
+                    //editObj = obj;
                 }
             });
             console.log("edit button clicked for id: " + id);
