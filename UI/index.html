@@ -8,7 +8,16 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
         integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+    crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+    integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+    crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+    integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+    crossorigin="anonymous"></script>
+    <title>Inventory Management System</title>
 </head>
 <style>
     #viewtable {
@@ -34,7 +43,7 @@
 
 <body>
     <div>
-        <h3> List of all items available in the inventory</h3>
+        <h3>Inventory Management System</h3>
         <button data-toggle='modal' id='createbtn' data-target='#createModalCenter' class='btn btn-success'
             onclick=createButton()><i class='fa fa-plus-circle'></i> Create a new Item</button>
 
@@ -64,29 +73,29 @@
                 </div>
                 <div class="modal-body">
                     <label for="inputItemName">Item Name</label>
-                    <input type="text" class="form-control" id="inputItemName">
+                    <input type="text" class="form-control" id="createInputItemName">
 
                     <label for="inputItemType">Item Type/Category</label>
-                    <input type="text" class="form-control" id="inputItemType">
+                    <input type="text" class="form-control" id="createInputItemType">
 
                     <label for="inputItemCount">Item Count</label>
-                    <input type="number" class="form-control" id="inputItemCount">
+                    <input type="number" class="form-control" id="createInputItemCount">
 
                     <label for="inputItemSP">Selling Price (Rs.)</label>
-                    <input type="number" class="form-control" id="inputItemSP">
+                    <input type="number" class="form-control" id="createInputItemSP">
 
                     <label for="inputItemCP">Cost Price (Rs.)</label>
-                    <input type="number" class="form-control" id="inputItemCP">
+                    <input type="number" class="form-control" id="createInputItemCP">
 
                     <label for="inputItemSuppID">Supplier ID</label>
-                    <input type="text" class="form-control" id="inputItemSuppID">
+                    <input type="text" class="form-control" id="createInputItemSuppID">
 
                     <label for="inputItemSuppName">Supplier Name</label>
-                    <input type="text" class="form-control" id="inputItemSuppName">
+                    <input type="text" class="form-control" id="createInputItemSuppName">
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Create</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="createNoBtn()">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="createSubmitBtn()">Create</button>
                 </div>
             </div>
         </div>
@@ -232,29 +241,23 @@
             xmlhttp = new XMLHttpRequest();
             xmlhttp.onreadystatechange = function () {
                 if (this.readyState == 4 && this.status == 200) {//when a good response is given do this
-                    location.reload()
-                    
+                    location.reload();
+
                 }
             }
             //set the request destination and type
             xmlhttp.open("PUT", edit_json_url, true);
-            
+
             //set required headers for the request
             xmlhttp.setRequestHeader("Content-type", "application/json");
-            
+
             // send the request
             xmlhttp.send(string); // when the request completes it will execute the code in onreadystatechange section
         }
 
         function editNoBtn() {
             editId = null;
-            document.getElementById('editInputItemName').setAttribute('value', null);
-                    document.getElementById('editInputItemType').setAttribute('value', null);
-                    document.getElementById('editInputItemCount').setAttribute('value', null);
-                    document.getElementById('editInputItemSP').setAttribute('value', null);
-                    document.getElementById('editInputItemCP').setAttribute('value', null);
-                    document.getElementById('editInputItemSuppID').setAttribute('value', null);
-                    document.getElementById('editInputItemSuppName').setAttribute('value', null);
+            location.reload();
             //editObj = null;
             console.log("Delete NO button clicked for id: " + deleteId);
         }
@@ -269,8 +272,53 @@
             console.log("Delete NO button clicked for id: " + deleteId);
         }
 
-        function editButton(id) {
+        function createSubmitBtn(){
+            var post_url = itemsUrl + '/';
+            // var obj = $('editForm').serializeJSON();
+            // var form = document.getElementById('editForm');
+            // var formData = new FormData(form);
+            var createObj = Object();
             
+            createObj.itemName = document.getElementById('createInputItemName').value;
+            createObj.itemType = document.getElementById('createInputItemType').value;
+            createObj.itemCount = document.getElementById('createInputItemCount').value;
+            createObj.itemSellingPrice = document.getElementById('createInputItemSP').value;
+            createObj.itemCostPrice = document.getElementById('createInputItemCP').value;
+            createObj.itemSupplierId = document.getElementById('createInputItemSuppID').value;
+            createObj.itemSupplierName = document.getElementById('createInputItemSuppName').value;
+
+            //convert object to json string
+            var string = JSON.stringify(createObj);
+
+            //convert string to Json Object
+            console.log(string);
+            console.log("Create SUBMIT button clicked with form data " + createObj);
+            // var formData = JSON.stringify($("editForm").serializeArray());
+            // jsonformdata = formData;
+
+            //Build the XMLHttpRequest (aka AJAX Request)
+            xmlhttp = new XMLHttpRequest();
+            xmlhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {//when a good response is given do this
+                    location.reload();
+
+                }
+            }
+            //set the request destination and type
+            xmlhttp.open("POST", post_url, true);
+
+            //set required headers for the request
+            xmlhttp.setRequestHeader("Content-type", "application/json");
+
+            // send the request
+            xmlhttp.send(string); // when the request completes it will execute the code in onreadystatechange section
+        }
+
+        $(document).on("hidden.bs.modal", "#exampleModalCenter", function () {
+  $(this).find('#editForm')[0].reset();
+});
+        function editButton(id) {
+
             editId = id;
             allData.forEach(function (obj) {
                 if (obj.id == id) {
@@ -310,15 +358,7 @@
             });
         }
     </script>
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-        crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
-        integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
-        crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
-        integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
-        crossorigin="anonymous"></script>
+   
 </body>
 
 </html>
