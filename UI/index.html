@@ -1,16 +1,295 @@
 <html>
-    <head>
-        <title>Inventory Management</title>
-    </head>
-    <body>
-        Inventory Management<br>
-        <div style="align-items:center">
-            <form>
-                <input type = "button" value="Create an Item"/>
-                <input type = "button" value="Edit an Item"/>
-                <input type = "button" value="Delete an Item"/>
-                <input type = "button" value="View all Items" onclick="location.href='viewall.html'" />
-            </form>
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+        integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+</head>
+<style>
+    #viewtable {
+        /* text-align: center; */
+        border-width: 1px solid black;
+        margin-left: 10px;
+        margin-right: 10px;
+    }
+
+    #createbtn {
+        margin-bottom: 10px;
+        margin-right: 10px;
+        float: right;
+    }
+
+    /* table,
+    td,
+    th {
+        border: 1px solid black;
+        border-collapse: collapse;
+    } */
+</style>
+
+<body>
+    <div>
+        <h3> List of all items available in the inventory</h3>
+        <button data-toggle='modal' id='createbtn' data-target='#createModalCenter' class='btn btn-success'
+            onclick=createButton()><i class='fa fa-plus-circle'></i> Create a new Item</button>
+
+        <table id="viewtable" class="table table-hover">
+            <tr>
+                <th scope="row">NAME</th>
+                <th scope="row">TYPE</th>
+                <th scope="row">COUNT</th>
+                <th scope="row">SELLING PRICE (Rs.)</th>
+                <th scope="row">COST PRICE (Rs.)</th>
+                <th scope="row">SUPPLIER ID</th>
+                <th scope="row">SUPPLIER NAME</th>
+                <th scope="row">ACTION</th>
+            </tr>
+        </table>
+    </div>
+    <!-- Create Modal -->
+    <div class="modal fade" id="createModalCenter" tabindex="-1" role="dialog" aria-labelledby="createModalCenterTitle"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="createModalCenterTitle">Create a new item</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <label for="inputItemName">Item Name</label>
+                    <input type="text" class="form-control" id="inputItemName">
+
+                    <label for="inputItemType">Item Type/Category</label>
+                    <input type="text" class="form-control" id="inputItemType">
+
+                    <label for="inputItemCount">Item Count</label>
+                    <input type="number" class="form-control" id="inputItemCount">
+
+                    <label for="inputItemSP">Selling Price (Rs.)</label>
+                    <input type="number" class="form-control" id="inputItemSP">
+
+                    <label for="inputItemCP">Cost Price (Rs.)</label>
+                    <input type="number" class="form-control" id="inputItemCP">
+
+                    <label for="inputItemSuppID">Supplier ID</label>
+                    <input type="text" class="form-control" id="inputItemSuppID">
+
+                    <label for="inputItemSuppName">Supplier Name</label>
+                    <input type="text" class="form-control" id="inputItemSuppName">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Create</button>
+                </div>
+            </div>
         </div>
-    </body>
+    </div>
+
+    <!-- Edit Modal -->
+    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
+        aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document" id="exampleModalCenter1">
+            <div class="modal-content" id="exampleModalCenter2">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalCenterTitle">Edit An Item</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="exampleModalCenter3">
+                    <form id='editForm'>
+                        <label for="inputItemName">Item Name</label>
+                        <input type="text" class="form-control" id="editInputItemName">
+
+                        <label for="inputItemType">Item Type/Category</label>
+                        <input type="text" class="form-control" id="editInputItemType">
+
+                        <label for="inputItemCount">Item Count</label>
+                        <input type="number" class="form-control" id="editInputItemCount">
+
+                        <label for="inputItemSP">Selling Price (Rs.)</label>
+                        <input type="number" class="form-control" id="editInputItemSP">
+
+                        <label for="inputItemCP">Cost Price (Rs.)</label>
+                        <input type="number" class="form-control" id="editInputItemCP">
+
+                        <label for="inputItemSuppID">Supplier ID</label>
+                        <input type="text" class="form-control" id="editInputItemSuppID">
+
+                        <label for="inputItemSuppName">Supplier Name</label>
+                        <input type="text" class="form-control" id="editInputItemSuppName">
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                        onclick="editNoBtn()">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="editSubmitBtn()">Update changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Delete Modal-->
+    <div class="modal" id="deleteModalCenter" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Warning!</h5>
+
+                </div>
+                <div class="modal-body">
+                    <p>Do you want to delete this item?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="deleteNoButton()"
+                        data-dismiss="modal">No</button>
+                    <button type="button" class="btn btn-primary" onclick="deleteYesButton()">Yes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        let deleteId = null;
+        let allData = null;
+        let jsonformdata = null;
+        let editId = null;
+        let editObj = null;
+        //first add an event listener for page load
+        document.addEventListener("DOMContentLoaded", get_json_data, false); // get_json_data is the function name that will fire on page load
+
+        //this function is in the event listener and will execute on page load
+        function get_json_data() {
+            // Relative URL of external json file
+            var json_url = 'http://www.localhost:9898/shopify/items';
+
+            //Build the XMLHttpRequest (aka AJAX Request)
+            xmlhttp = new XMLHttpRequest();
+            xmlhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {//when a good response is given do this
+
+                    var data = JSON.parse(this.responseText); // convert the response to a json object
+                    allData = data;
+                    append_json(data);// pass the json object to the append_json function
+                }
+            }
+            //set the request destination and type
+            xmlhttp.open("GET", json_url, true);
+            //set required headers for the request
+            xmlhttp.setRequestHeader("Content-type", "application/json");
+            // send the request
+            xmlhttp.send(); // when the request completes it will execute the code in onreadystatechange section
+        }
+
+        function delete_json_data() {
+            // Relative URL of external json file
+            var delete_json_url = 'http://www.localhost:9898/shopify/items/' + deleteId;
+
+            //Build the XMLHttpRequest (aka AJAX Request)
+            xmlhttp = new XMLHttpRequest();
+            xmlhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {//when a good response is given do this
+                    location.reload()
+                }
+            }
+            //set the request destination and type
+            xmlhttp.open("DELETE", delete_json_url, true);
+            //set required headers for the request
+            //xmlhttp.setRequestHeader("Content-type", "application/json");
+            // send the request
+            xmlhttp.send(); // when the request completes it will execute the code in onreadystatechange section
+        }
+
+        function editSubmitBtn() {
+            // var obj = $('editForm').serializeJSON();
+            // var form = document.getElementById('editForm');
+            // var formData = new FormData(form);
+            editObj.id = editId;
+            editObj.itemName = document.getElementById('editInputItemName').value;
+            editObj.itemType = document.getElementById('editInputItemType').value;
+            editObj.itemCount = document.getElementById('editInputItemCount').value;
+            editObj.itemSellingPrice = document.getElementById('editInputItemSP').value;
+            editObj.itemCostPrice = document.getElementById('editInputItemCP').value;
+            editObj.itemSupplierId = document.getElementById('editInputItemSuppID').value;
+            editObj.itemSupplierName = document.getElementById('editInputItemSuppName').value;
+
+            console.log("EDIT SUBMIT button clicked with form data " + editObj);
+            // var formData = JSON.stringify($("editForm").serializeArray());
+            // jsonformdata = formData;
+        }
+
+        function editNoBtn() {
+            editId = null;
+            editObj = null;
+            console.log("Delete NO button clicked for id: " + deleteId);
+        }
+
+        function deleteYesButton() {
+            console.log("Delete YES button clicked for id: " + deleteId);
+            delete_json_data();
+        }
+
+        function deleteNoButton() {
+            deleteId = null;
+            console.log("Delete NO button clicked for id: " + deleteId);
+        }
+
+        function
+            editButton(id) {
+            var editF = document.getElementById('editInputItemName');
+            editId = id;
+            allData.forEach(function (obj) {
+                if (obj.id == id) {
+                    document.getElementById('editInputItemName').setAttribute('value', obj.itemName);
+                    document.getElementById('editInputItemType').setAttribute('value', obj.itemType);
+                    document.getElementById('editInputItemCount').setAttribute('value', obj.itemCount);
+                    document.getElementById('editInputItemSP').setAttribute('value', obj.itemSellingPrice);
+                    document.getElementById('editInputItemCP').setAttribute('value', obj.itemCostPrice);
+                    document.getElementById('editInputItemSuppID').setAttribute('value', obj.itemSupplierId);
+                    document.getElementById('editInputItemSuppName').setAttribute('value', obj.itemSupplierName);
+                    editObj = obj;
+                }
+            });
+            console.log("edit button clicked for id: " + id);
+        }
+
+        function deleteButton(id) {
+            deleteId = id;
+            console.log("Delete button clicked for id: " + id);
+
+        }
+        //this function appends the json data to the table 'viewtable'
+        function append_json(data) {
+            var table = document.getElementById('viewtable');
+            data.forEach(function (object) {
+                var tr = document.createElement('tr');
+                tr.innerHTML = '<td>' + object.itemName + '</td>' +
+                    '<td>' + object.itemType + '</td>' +
+                    '<td>' + object.itemCount + '</td>' +
+                    '<td>' + object.itemSellingPrice + '</td>' +
+                    '<td>' + object.itemCostPrice + '</td>' +
+                    '<td>' + object.itemSupplierId + '</td>' +
+                    '<td>' + object.itemSupplierName + '</td>' +
+                    '<td>' + "<input type='button' data-toggle='modal' data-target='#exampleModalCenter' class='btn btn-primary' value='Edit' onclick=editButton(" + object.id + ")> <input type='button' data-toggle='modal' data-target='#deleteModalCenter' class='btn btn-danger' value='Delete' onclick=deleteButton(" + object.id + ")> " + '</td>'
+                    ;
+                table.appendChild(tr);
+            });
+        }
+    </script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+        integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+        integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+        crossorigin="anonymous"></script>
+</body>
+
 </html>

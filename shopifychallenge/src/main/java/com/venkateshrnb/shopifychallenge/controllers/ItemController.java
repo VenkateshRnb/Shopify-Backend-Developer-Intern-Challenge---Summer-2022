@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -44,23 +45,35 @@ public class ItemController {
 	@PostMapping("/items/")
 	public ResponseEntity<HttpStatus> createItem(@RequestBody Item item) {
 		try {
-			if(null != itemService.createItem(item)) {
-				return new ResponseEntity<HttpStatus>(HttpStatus.OK);
-			}
+			itemService.createItem(item);
 		} catch(Exception ex) {
 			logger.error(ex.getMessage());
 			return new ResponseEntity<HttpStatus>(HttpStatus.BAD_REQUEST);
 		}
-		return new ResponseEntity<HttpStatus>(HttpStatus.BAD_REQUEST);		
+		return new ResponseEntity<HttpStatus>(HttpStatus.OK);		
 	}
 	
 	@DeleteMapping("/items/{id}")
-	public ResponseEntity<HttpStatus> createItem(@PathVariable String id) {
+	public ResponseEntity<HttpStatus> deleteItem(@PathVariable String id) {
 		
 		try {
 			itemService.deleteItem(id);
 		} catch(Exception ex) {
 			logger.error(ex.getMessage());
+			return new ResponseEntity<HttpStatus>(HttpStatus.BAD_REQUEST);
+		}
+		return new ResponseEntity<HttpStatus>(HttpStatus.OK);
+	}
+	
+	@PutMapping("/items/{id}")
+	public ResponseEntity<HttpStatus> updateItem(@RequestBody Item item) {
+		try {
+			itemService.updateItem(item);
+		} catch(Exception ex) {
+			logger.error(ex.getMessage());
+			if(ex.getMessage().equalsIgnoreCase("Item not present. Please refresh the page for the latest data.")) {
+				return new ResponseEntity<HttpStatus>(HttpStatus.NOT_FOUND);
+			}
 			return new ResponseEntity<HttpStatus>(HttpStatus.BAD_REQUEST);
 		}
 		return new ResponseEntity<HttpStatus>(HttpStatus.OK);

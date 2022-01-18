@@ -1,10 +1,9 @@
 package com.venkateshrnb.shopifychallenge;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.venkateshrnb.shopifychallenge.pojo.Item;
@@ -24,11 +23,23 @@ public class ItemService {
 		try {
 			return itemRepository.save(item);
 		} catch(Exception ex) {
-			return null;
+			throw ex;
 		}
 	}
 
 	public void deleteItem(String id) {
 			itemRepository.deleteById(Integer.parseInt(id));
 	}
+	
+	public Item updateItem(Item item) throws Exception {
+		Optional<Item> itemFromDb = itemRepository.findById(item.getId());
+		if(!itemFromDb.isPresent()) {
+			throw new Exception("Item not present. Please refresh the page for the latest data.");
+		}
+		try {
+			return itemRepository.save(item);
+		} catch(Exception ex) {
+			throw ex;
+		}
+}
 }
